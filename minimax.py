@@ -36,10 +36,6 @@ def state_evaluation(s, p):
             else: return -10
     if '_' not in s:
         return 0
-    else:
-        # raise NotImplementedError
-        # for Debug mode
-        return None
         
 def action_result(s, p, a):
     new_s = deepcopy(s)
