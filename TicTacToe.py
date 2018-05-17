@@ -19,7 +19,7 @@ class tictactoe:
         for i in range(3):
             print(' '.join(disp_board[3*i:3*(i+1)]))
                     
-    def checkresult(self):
+    def checkresult_old(self):
         winning_cases = [(0,1,2),(3,4,5),(6,7,8),
             (0,3,6),(1,4,7),(2,5,8),
             (0,4,8),(2,4,6)]
@@ -36,10 +36,27 @@ class tictactoe:
         #         self.result = 2
         if '_' not in self.board:
             self.result = 3
+
+    def checkresult(self, s = None):
+        s = self.board if s is None else s
         
-    def play(self):
-        marker = 'O'
-        if self.player == 2: marker = 'X'
+        winning_cases = [(0,1,2),(3,4,5),(6,7,8),
+            (0,3,6),(1,4,7),(2,5,8),
+            (0,4,8),(2,4,6)]
+        for wc in winning_cases:
+            if s[wc[0]] != '_' and\
+                    s[wc[0]] == s[wc[1]] and\
+                    s[wc[1]] == s[wc[2]]:
+                if s[wc[0]] == 'O': return 1
+                else: return 2
+        if '_' not in self.board:
+            return 3
+        else:
+            return 0
+        
+    def player_input(self):
+        marker = 'X'
+        if self.player == 2: marker = 'O'
         
         input_msg = f'Player {self.player}({marker}), select your next position\n'
         
@@ -58,16 +75,19 @@ class tictactoe:
         
     def change_turn(self):
         self.player = 3 - self.player
-        
+    
+    def play(self):
+        while self.result == 0:
+            self.dispboard()
+            self.player_input()
+            self.checkresult_old()
+            self.change_turn()
+        self.dispboard()
+        if self.result == 3:
+            print('Game Tied')
+        else:
+            print(f'Player {self.result} Won!')
+    
 if __name__ == "__main__":
     t = tictactoe()
-    while t.result == 0:
-        t.dispboard()
-        t.play()
-        t.checkresult()
-        t.change_turn()
-    t.dispboard()
-    if t.result == 3:
-        print('Game Tied')
-    else:
-        print(f'Player {t.result} Won!')
+    t.play()
