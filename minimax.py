@@ -32,8 +32,8 @@ def state_evaluation(s, p):
         if s[wc[0]] != '_' and\
                 s[wc[0]] == s[wc[1]] and\
                 s[wc[1]] == s[wc[2]]:
-            if s[wc[0]] == p: return 10
-            else: return -10
+            if s[wc[0]] == p: return 1
+            else: return -1
     if '_' not in s:
         return 0
         
@@ -42,26 +42,10 @@ def action_result(s, p, a):
     new_s[a] = 'X' if p == 1 else 'O'
     return new_s
 
-def _function_test():
-    t = ttt()
-    while t.result == 0:
-        t.dispboard()
-        t.player_input()
-        t.checkresult_old()
-        t.change_turn()
-        for f in [current_player, available_action, terminal, det_next_step]:
-            print(str(f), f(t.board))
-        print(state_evaluation, state_evaluation(t.board, t.player))
-    t.dispboard()
-    if t.result == 3:
-        print('Game Tied')
-    else:
-        print(f'Player {t.result} Won!')
-
 def minimax(s, p, deph = 0):
     if terminal(s): return state_evaluation(s,p)
     cp = current_player(s)
-    val = -100 if cp == p else 100
+    val = -10 if cp == p else 10
     actions = available_action(s)
     for a in actions:
         s_new = action_result(s, cp, a)
@@ -69,7 +53,7 @@ def minimax(s, p, deph = 0):
         val = max(val, v) if cp == p else min(val, v)
     return val
 
-def det_next_step(s):
+def det_next_action(s):
     p = current_player(s)
     if s == list('_'*9): return 0
     elif '_' not in s: return None
@@ -78,7 +62,38 @@ def det_next_step(s):
     for a in actions:
         s_new = action_result(s, p, a)
         values.append(minimax(s_new, p))
-    return actions[values.index(max(values))]
+    return actions[values.index(max(values))], list(zip(actions, values))
+
+def disp_NA(s):
+    a, d = det_next_action(s)
+    d.append((9,9))
+    r, cnt = [], 0
+    for i in range(9):
+        if d[cnt][0] == i:
+            r.append(str(d[cnt][1]))
+            cnt += 1
+        else:
+            r.append('_')
+    for i in range(3):
+            print(' '.join(r[3*i:3*(i+1)]))
+    print(f'Ideal action value: {a}')
+
+def _function_test():
+    t = ttt()
+    while t.result == 0:
+        t.dispboard()
+        t.player_input()
+        t.checkresult()
+        t.switch_player()
+        
+        disp_NA(t.board)
+        print()
+        
+    t.dispboard()
+    if t.result == 3:
+        print('Game Tied')
+    else:
+        print(f'Player {t.result} Won!')
 
 if __name__ == '__main__':
     _function_test()
