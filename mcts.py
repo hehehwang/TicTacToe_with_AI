@@ -16,24 +16,25 @@ class Node:
         self.state = s
         self.player = MCTS.current_player(s)
         self.utc = float('inf')
+        self.result = MCTS.is_terminal(s)
 
-    def __str__(self):
-        return ''.join(self.state) + ' ' + str(self.q) + '/' + str(self.n) + ' ' + str(self.q//self.n) + ' ' + str(self.utc)
+    def __repr__(self):
+        return ''.join(self.state) + ' ' + str(self.q) + '/' + str(self.n) + ' ' + str(self.utc)[:5] + ' ' + str(self.result)
 
     def update(self, v):
         self.n += 1
         if v == 3:
             self.q += 0.5
-        elif v == self.player:
+        elif v == 3 - self.player:
             self.q += 1
 
         #                            ----------------
         #                Q(v_i)     / 2 * ln(N(V))
         # UCT(v_i, v) = -------- + / ---------------
         #                N(v_i)   v     N(v_i)
-
-        if self.parent:
-            self.utc = self.q / (self.n) + sqrt(2 * log(self.parent.n+1) / (self.n))
+        #
+        # if self.parent:
+        #     self.utc = self.q / (self.n) + sqrt(2 * log(self.parent.n+1) / (self.n))
 
 class MCTS:
     def __init__(self, s):
@@ -91,26 +92,29 @@ class MCTS:
         else:
             return self.is_terminal(s)
 
-    # @staticmethod
-    # def utc(node):
-    # #                            ----------------
-    # #                Q(v_i)     / 2 * ln(N(V))
-    # # UCT(v_i, v) = -------- + / ---------------
-    # #                N(v_i)   v     N(v_i)
-    # #
-    #     v = node.q / (node.n + 1e-12) + sqrt(2 * log(node.parent.n + 1) / (node.n + 1e-12))
-    #     return v
+    @staticmethod
+    def utc(node):
+    #                            ----------------
+    #                Q(v_i)     / 2 * ln(N(V))
+    # UCT(v_i, v) = -------- + / ---------------
+    #                N(v_i)   v     N(v_i)
+    #
+        v = node.q / (node.n + 1e-12) + sqrt(2 * log(node.parent.n + 1) / (node.n + 1e-12))
+        return v
 
     def selection(self, node):
         child_nods = node.child
         if child_nods:
             imax, vmax = 0, 0
             for i, n in enumerate(child_nods):
+                n.utc = MCTS.utc(n)
                 v = n.utc
                 if  v > vmax : imax, vmax = i, v
-            return self.selection(child_nods[imax])
+            selected = child_nods[imax]
+            return self.selection(selected)
         else:
-            return node
+            selected = node
+            return selected
 
     def backpropagation(self, node, v):
         node.update(v)
@@ -121,6 +125,8 @@ class MCTS:
         # selection -> expand -> playout -> backpropagation
         if mode == 'iteration':
             for _ in range(criteria):
+                if _%1000 == 0 :
+                    continue
                 node = self.selection(self.root)
                 self.expansion(node)
                 children = node.child

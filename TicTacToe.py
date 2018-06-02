@@ -2,7 +2,7 @@
 # by hehehwang@gmail.com
 # - 2018.05.18
 
-class tictactoe:
+class TTT:
     def __init__(self):
         self.board = list('_'*9)
         # Board Index:
@@ -73,7 +73,7 @@ class tictactoe:
         else: return 'O'
 
     def player_input(self):
-        marker = tictactoe.player_marker(self.player)
+        marker = TTT.player_marker(self.player)
         input_msg = f'Player {self.player}({marker}), select your next position\n'
         
         while 1:
@@ -98,12 +98,13 @@ class tictactoe:
             self.player_input()
             self.checkresult()
             self.switch_player()
+            print(self.board)
         self.dispboard()
         if self.result == 3:
             print('Game ended in DRAW')
         else:
-            print(f'Player {self.result}({tictactoe.player_marker(self.result)}) Won!')
+            print(f'Player {self.result}({TTT.player_marker(self.result)}) Won!')
     
 if __name__ == "__main__":
-    t = tictactoe()
+    t = TTT()
     t.play()
