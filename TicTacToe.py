@@ -98,13 +98,18 @@ class TTT:
             self.player_input()
             self.checkresult()
             self.switch_player()
-            print(self.board)
         self.dispboard()
         if self.result == 3:
             print('Game ended in DRAW')
         else:
             print(f'Player {self.result}({TTT.player_marker(self.result)}) Won!')
-    
+
+    def play_one_turn(self):
+        self.dispboard()
+        self.player_input()
+        self.checkresult()
+        self.switch_player()
+
 if __name__ == "__main__":
     t = TTT()
     t.play()
