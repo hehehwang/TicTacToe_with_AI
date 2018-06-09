@@ -84,16 +84,20 @@ class TTT:
 
         while 1:
             try:
-                p = int(input(input_msg))
-                if self.board[p] != '_':
+                v = int(input(input_msg))
+                if self.board[v] != '_':
                     raise NotImplementedError
                 else:
                     break
             except NotImplementedError:
                 print("You can't place marker on that place")
 
-        self.board[p] = marker
+        self.board[v] = marker
         print()
+
+    def ai_input(self, v):
+        marker = TTT.player_marker(self.player)
+        self.board[v] = marker
 
     def switch_player(self):
         self.player = 3 - self.player
