@@ -144,8 +144,9 @@ def auto_mcts(board, mcts_mode, mcts_criteria):
 
 
 mmm, rrr = 20, 50 # Match, Round
-mcts_criteria = ['time', 1] # ['time' or 'iter', millisecond or iteration cycle]
+mcts_criteria = ['time', 3] # ['time' or 'iter', millisecond or iteration cycle]
 fig_dpi = 200 # size of output img
+look_through = False
 
 # 1. Random vs Random ===============================================
 p1_data, p2_data, tie_data = [], [], []
@@ -156,40 +157,71 @@ mcts_iii = np.zeros(rrr)
 mcts_iterations = np.zeros(mmm)
 
 time_start = time.time()
-for i in range(mmm):
-    for j in range(rrr):
-        t = TTT()
-        # t.dispboard()
-        # print()
-        while t.result == 0:
-            if t.player == 1:
-                v = auto_random(t.board)
-                t.ai_input(v)
+if look_through:
+    for i in range(mmm):
+        for j in range(rrr):
+            t = TTT()
+            t.dispboard()
+            print()
+            while t.result == 0:
+                if t.player == 1:
+                    v = auto_random(t.board)
+                    t.ai_input(v)
+                else:
+                    v = auto_random(t.board)
+                    t.ai_input(v)
+                t.dispboard()
+                print()
+                t.checkresult()
+                t.switch_player()
+            r = t.result
+            print(f'\n{i}/{mmm}, {j}/{rrr}, {r}\n\n')
+            if r == 1:
+                p1_wins += 1
+            elif r == 2:
+                p2_wins += 1
             else:
-                v = auto_random(t.board)
-                t.ai_input(v)
+                tie += 1
+        p1_data.append(p1_wins / iterations[i] * 100)
+        p2_data.append(p2_wins / iterations[i] * 100)
+        tie_data.append(tie / iterations[i] * 100)
+
+else:
+    for i in range(mmm):
+        for j in range(rrr):
+            t = TTT()
             # t.dispboard()
             # print()
-            t.checkresult()
-            t.switch_player()
-        r = t.result
-        # print(f'\n{i}/{mmm}, {j}/{rrr}, {r}\n\n')
-        if r == 1:
-            p1_wins += 1
-        elif r == 2:
-            p2_wins += 1
-        else:
-            tie += 1
-
-    p1_data.append(p1_wins / iterations[i] * 100)
-    p2_data.append(p2_wins / iterations[i] * 100)
-    tie_data.append(tie / iterations[i] * 100)
+            while t.result == 0:
+                if t.player == 1:
+                    v = auto_random(t.board)
+                    t.ai_input(v)
+                else:
+                    v = auto_random(t.board)
+                    t.ai_input(v)
+                # t.dispboard()
+                # print()
+                t.checkresult()
+                t.switch_player()
+            r = t.result
+            # print(f'\n{i}/{mmm}, {j}/{rrr}, {r}\n\n')
+            if r == 1:
+                p1_wins += 1
+            elif r == 2:
+                p2_wins += 1
+            else:
+                tie += 1
+        p1_data.append(p1_wins / iterations[i] * 100)
+        p2_data.append(p2_wins / iterations[i] * 100)
+        tie_data.append(tie / iterations[i] * 100)
 
 print('Elapsed Time: ', time.time() - time_start)
 print('P1 winning rate: ', p1_data[-1])
 print('P2 winning rate: ', p2_data[-1])
 print()
+
 plt.figure(dpi=fig_dpi)
+plt.grid(True)
 plt.plot(iterations, p1_data, 'r', lw=3, label='P1(X) = RANDOM')
 plt.plot(iterations, p2_data, 'b', lw=3, label='P2(O) = RANDOM')
 plt.plot(iterations, tie_data, 'g--', lw=2, label='Tie')
@@ -211,38 +243,71 @@ mcts_iii = np.zeros(rrr)
 mcts_iterations = np.zeros(mmm)
 
 time_start = time.time()
-for i in range(mmm):
-    for j in range(rrr):
-        t = TTT()
-        # t.dispboard()
-        # print()
-        while t.result == 0:
-            if t.player == 1:
-                v = auto_random(t.board)
-                t.ai_input(v)
+if look_through:
+    for i in range(mmm):
+        for j in range(rrr):
+            t = TTT()
+            t.dispboard()
+            print()
+            while t.result == 0:
+                if t.player == 1:
+                    v = auto_random(t.board)
+                    t.ai_input(v)
+                else:
+                    v = auto_mcts(t.board, mcts_criteria[0], mcts_criteria[1])
+                    mcts_iii[j] = v[0]
+                    t.ai_input(v[1])
+                t.dispboard()
+                print()
+                t.checkresult()
+                t.switch_player()
+            r = t.result
+            print(f'\n{i}/{mmm}, {j}/{rrr}, {r}\n\n')
+            if r == 1:
+                p1_wins += 1
+            elif r == 2:
+                p2_wins += 1
             else:
-                v = auto_mcts(t.board, mcts_criteria[0], mcts_criteria[1])
-                mcts_iii[j] = v[0]
-                t.ai_input(v[1])
+                tie += 1
+        p1_data.append(p1_wins / iterations[i] * 100)
+        p2_data.append(p2_wins / iterations[i] * 100)
+        tie_data.append(tie / iterations[i] * 100)
+
+        mcts_iterations[i] = np.mean(mcts_iii)
+        mcts_iii = np.zeros(rrr)
+else:
+    for i in range(mmm):
+        for j in range(rrr):
+            t = TTT()
             # t.dispboard()
             # print()
-            t.checkresult()
-            t.switch_player()
-        r = t.result
-        # print(f'\n{i}/{mmm}, {j}/{rrr}, {r}\n\n')
-        if r == 1:
-            p1_wins += 1
-        elif r == 2:
-            p2_wins += 1
-        else:
-            tie += 1
+            while t.result == 0:
+                if t.player == 1:
+                    v = auto_random(t.board)
+                    t.ai_input(v)
+                else:
+                    v = auto_mcts(t.board, mcts_criteria[0], mcts_criteria[1])
+                    mcts_iii[j] = v[0]
+                    t.ai_input(v[1])
+                # t.dispboard()
+                # print()
+                t.checkresult()
+                t.switch_player()
+            r = t.result
+            # print(f'\n{i}/{mmm}, {j}/{rrr}, {r}\n\n')
+            if r == 1:
+                p1_wins += 1
+            elif r == 2:
+                p2_wins += 1
+            else:
+                tie += 1
 
-    p1_data.append(p1_wins / iterations[i] * 100)
-    p2_data.append(p2_wins / iterations[i] * 100)
-    tie_data.append(tie / iterations[i] * 100)
+        p1_data.append(p1_wins / iterations[i] * 100)
+        p2_data.append(p2_wins / iterations[i] * 100)
+        tie_data.append(tie / iterations[i] * 100)
 
-    mcts_iterations[i] = np.mean(mcts_iii)
-    mcts_iii = np.zeros(rrr)
+        mcts_iterations[i] = np.mean(mcts_iii)
+        mcts_iii = np.zeros(rrr)
 
 print('Elapsed Time: ', time.time() - time_start)
 print('P1 winning rate: ', p1_data[-1])
@@ -251,6 +316,7 @@ print()
 
 fig, ax0 = plt.subplots(dpi=fig_dpi)
 ax1 = ax0.twinx()
+ax0.grid(True)
 ax0.plot(iterations, p1_data, 'r', lw=3, label='P1(X) = RANDOM')
 ax0.plot(iterations, p2_data, 'b', lw=3, label='P2(O) = MCTS')
 ax0.plot(iterations, tie_data, 'g', lw=2, label='Tie')
@@ -280,38 +346,72 @@ mcts_iii = np.zeros(rrr)
 mcts_iterations = np.zeros(mmm)
 
 time_start = time.time()
-for i in range(mmm):
-    for j in range(rrr):
-        t = TTT()
-        # t.dispboard()
-        # print()
-        while t.result == 0:
-            if t.player == 2:
-                v = auto_random(t.board)
-                t.ai_input(v)
+if look_through:
+    for i in range(mmm):
+        for j in range(rrr):
+            t = TTT()
+            t.dispboard()
+            print()
+            while t.result == 0:
+                if t.player == 2:
+                    v = auto_random(t.board)
+                    t.ai_input(v)
+                else:
+                    v = auto_mcts(t.board, mcts_criteria[0], mcts_criteria[1])
+                    mcts_iii[j] = v[0]
+                    t.ai_input(v[1])
+                t.dispboard()
+                print()
+                t.checkresult()
+                t.switch_player()
+            r = t.result
+            print(f'\n{i}/{mmm}, {j}/{rrr}, {r}\n\n')
+            if r == 1:
+                p1_wins += 1
+            elif r == 2:
+                p2_wins += 1
             else:
-                v = auto_mcts(t.board, mcts_criteria[0], mcts_criteria[1])
-                mcts_iii[j] = v[0]
-                t.ai_input(v[1])
+                tie += 1
+        p1_data.append(p1_wins / iterations[i] * 100)
+        p2_data.append(p2_wins / iterations[i] * 100)
+        tie_data.append(tie / iterations[i] * 100)
+
+        mcts_iterations[i] = np.mean(mcts_iii)
+        mcts_iii = np.zeros(rrr)
+
+else:
+    for i in range(mmm):
+        for j in range(rrr):
+            t = TTT()
             # t.dispboard()
             # print()
-            t.checkresult()
-            t.switch_player()
-        r = t.result
-        # print(f'\n{i}/{mmm}, {j}/{rrr}, {r}\n\n')
-        if r == 1:
-            p1_wins += 1
-        elif r == 2:
-            p2_wins += 1
-        else:
-            tie += 1
+            while t.result == 0:
+                if t.player == 2:
+                    v = auto_random(t.board)
+                    t.ai_input(v)
+                else:
+                    v = auto_mcts(t.board, mcts_criteria[0], mcts_criteria[1])
+                    mcts_iii[j] = v[0]
+                    t.ai_input(v[1])
+                # t.dispboard()
+                # print()
+                t.checkresult()
+                t.switch_player()
+            r = t.result
+            # print(f'\n{i}/{mmm}, {j}/{rrr}, {r}\n\n')
+            if r == 1:
+                p1_wins += 1
+            elif r == 2:
+                p2_wins += 1
+            else:
+                tie += 1
 
-    p1_data.append(p1_wins / iterations[i] * 100)
-    p2_data.append(p2_wins / iterations[i] * 100)
-    tie_data.append(tie / iterations[i] * 100)
+        p1_data.append(p1_wins / iterations[i] * 100)
+        p2_data.append(p2_wins / iterations[i] * 100)
+        tie_data.append(tie / iterations[i] * 100)
 
-    mcts_iterations[i] = np.mean(mcts_iii)
-    mcts_iii = np.zeros(rrr)
+        mcts_iterations[i] = np.mean(mcts_iii)
+        mcts_iii = np.zeros(rrr)
 
 print('Elapsed Time: ', time.time() - time_start)
 print('P1 winning rate: ', p1_data[-1])
@@ -320,6 +420,7 @@ print()
 
 fig, ax0 = plt.subplots(dpi=fig_dpi)
 ax1 = ax0.twinx()
+ax0.grid(True)
 ax0.plot(iterations, p1_data, 'r', lw=3, label='P1(X) = MCTS')
 ax0.plot(iterations, p2_data, 'b', lw=3, label='P2(O) = RANDOM')
 ax0.plot(iterations, tie_data, 'g', lw=2, label='Tie')
@@ -340,7 +441,7 @@ else:
 plt.title(title_txt)
 plt.savefig(save_route)
 
-# 3. MCTS vs MCTS ===============================================
+# 4. MCTS vs MCTS ===============================================
 
 p1_data, p2_data, tie_data = [], [], []
 p1_wins, p2_wins, tie = 0, 0, 0
@@ -350,39 +451,75 @@ p1_iii, p2_iii = np.zeros(rrr), np.zeros(rrr)
 p1_iterations, p2_iterations = np.zeros(mmm), np.zeros(mmm)
 
 time_start = time.time()
-for i in range(mmm):
-    for j in range(rrr):
-        t = TTT()
-        # t.dispboard()
-        # print()
-        while t.result == 0:
-            if t.player == 2:
-                v = auto_mcts(t.board, mcts_criteria[0], mcts_criteria[1])
-                p1_iii[j] = v[0]
-                t.ai_input(v[1])
+
+if look_through:
+    for i in range(mmm):
+        for j in range(rrr):
+            t = TTT()
+            t.dispboard()
+            print()
+            while t.result == 0:
+                if t.player == 2:
+                    v = auto_mcts(t.board, mcts_criteria[0], mcts_criteria[1])
+                    p1_iii[j] = v[0]
+                    t.ai_input(v[1])
+                else:
+                    v = auto_mcts(t.board, mcts_criteria[0], mcts_criteria[1])
+                    p2_iii[j] = v[0]
+                    t.ai_input(v[1])
+                t.dispboard()
+                print()
+                t.checkresult()
+                t.switch_player()
+            r = t.result
+            print(f'\n{i}/{mmm}, {j}/{rrr}, {r}\n\n')
+            if r == 1:
+                p1_wins += 1
+            elif r == 2:
+                p2_wins += 1
             else:
-                v = auto_mcts(t.board, mcts_criteria[0], mcts_criteria[1])
-                p2_iii[j] = v[0]
-                t.ai_input(v[1])
+                tie += 1
+        p1_data.append(p1_wins / iterations[i] * 100)
+        p2_data.append(p2_wins / iterations[i] * 100)
+        tie_data.append(tie / iterations[i] * 100)
+
+        p1_iterations[i], p2_iterations[i] = np.mean(p1_iii), np.mean(p2_iii)
+        p1_iii, p2_iii = np.zeros(rrr), np.zeros(rrr)
+
+else:
+    for i in range(mmm):
+        for j in range(rrr):
+            t = TTT()
             # t.dispboard()
             # print()
-            t.checkresult()
-            t.switch_player()
-        r = t.result
-        # print(f'\n{i}/{mmm}, {j}/{rrr}, {r}\n\n')
-        if r == 1:
-            p1_wins += 1
-        elif r == 2:
-            p2_wins += 1
-        else:
-            tie += 1
+            while t.result == 0:
+                if t.player == 2:
+                    v = auto_mcts(t.board, mcts_criteria[0], mcts_criteria[1])
+                    p1_iii[j] = v[0]
+                    t.ai_input(v[1])
+                else:
+                    v = auto_mcts(t.board, mcts_criteria[0], mcts_criteria[1])
+                    p2_iii[j] = v[0]
+                    t.ai_input(v[1])
+                # t.dispboard()
+                # print()
+                t.checkresult()
+                t.switch_player()
+            r = t.result
+            # print(f'\n{i}/{mmm}, {j}/{rrr}, {r}\n\n')
+            if r == 1:
+                p1_wins += 1
+            elif r == 2:
+                p2_wins += 1
+            else:
+                tie += 1
 
-    p1_data.append(p1_wins / iterations[i] * 100)
-    p2_data.append(p2_wins / iterations[i] * 100)
-    tie_data.append(tie / iterations[i] * 100)
+        p1_data.append(p1_wins / iterations[i] * 100)
+        p2_data.append(p2_wins / iterations[i] * 100)
+        tie_data.append(tie / iterations[i] * 100)
 
-    p1_iterations[i], p2_iterations[i] = np.mean(p1_iii), np.mean(p2_iii)
-    p1_iii, p2_iii = np.zeros(rrr), np.zeros(rrr)
+        p1_iterations[i], p2_iterations[i] = np.mean(p1_iii), np.mean(p2_iii)
+        p1_iii, p2_iii = np.zeros(rrr), np.zeros(rrr)
 
 print('Elapsed Time: ', time.time() - time_start)
 print('P1 winning rate: ', p1_data[-1])
@@ -391,6 +528,7 @@ print()
 
 fig, ax0 = plt.subplots(dpi=fig_dpi)
 ax1 = ax0.twinx()
+ax0.grid(True)
 ax0.plot(iterations, p1_data, 'r', lw=3, label='P1(X) = MCTS')
 ax0.plot(iterations, p2_data, 'b', lw=3, label='P2(O) = MCTS')
 ax0.plot(iterations, tie_data, 'g', lw=2, label='Tie')
