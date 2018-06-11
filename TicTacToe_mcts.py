@@ -187,9 +187,18 @@ if __name__ == '__main__':
     m = MCTS(t.board)
     while t.result == 0:
         t.dispboard()
-        ii = m.mcts(s=t.board, mode='time', criteria=50)
-        print(ii)
+
+        time_start = time.time()
+        ii = m.mcts(new_board=t.board, mode='time', criteria=2000)
+        print('iteration value: ', ii)
+        print('elapsed time: ',time.time()-time_start)
         m.mcts_disp()
+
+        time_start = time.time()
+        m.mcts(new_board=t.board, mode='iter', criteria=ii)
+        print('elapsed time: ',time.time()-time_start)
+        m.mcts_disp()
+
         t.player_input()
         t.checkresult()
         t.switch_player()
