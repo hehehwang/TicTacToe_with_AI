@@ -459,7 +459,7 @@ if look_through:
             t.dispboard()
             print()
             while t.result == 0:
-                if t.player == 2:
+                if t.player == 1:
                     v = auto_mcts(t.board, mcts_criteria[0], mcts_criteria[1])
                     p1_iii[j] = v[0]
                     t.ai_input(v[1])
