@@ -23,16 +23,15 @@ def auto_mcts(board, mode, criteria):
     return iii, tmp.mcts_value_only()
 
 
-mmm, rrr = 20, 25  # Match, Round
-mcts_criteria = ['time', 1]  # ['time' or 'iter', millisecond or iteration cycle]
-plt_fontsize = {'title': 'medium',
+mmm, rrr = 25, 40  # Match, Round
+mcts_criteria = ['time', 100]  # ['time' or 'iter', millisecond or iteration cycle]
+plt_fontsize = {'title': 'small',
                 'legend': 'xx-small',
                 'x_lbl': 'x-small',
                 'y_lbl': 'x-small',
                 'tick_lbl': 'x-small'}
-fig_dpi = 200  # size of output img
+fig_dpi = 300  # size of output img
 look_through = False
-
 
 save_route = f'output/mcts_vs_random_{mcts_criteria[0]}_'
 if mcts_criteria[0] == 'time':
@@ -43,8 +42,8 @@ else:
     raise NotImplementedError
 save_route += time.strftime('_%m%d_%H%M%S', time.localtime(time.time()))
 
-
 fig, axes = plt.subplots(2, 2, dpi=fig_dpi)
+
 
 # 1. Random vs Random ===============================================
 p1_data, p2_data, tie_data = [], [], []
@@ -118,33 +117,35 @@ print('Elapsed Time: ', time_elapsd)
 print('P1 winning rate: ', p1_data[-1])
 print('P2 winning rate: ', p2_data[-1])
 print()
-with open(save_route+'.txt', 'w') as f:
+
+with open(save_route + '.txt', 'w') as f:
     f.write('CASE Ⅰ. RANDOM VS RANDOM\n')
     # f.write('- P1 data:\n')
     # f.write(str(p1_data)+'\n')
     # f.write('- P2 data:\n')
     # f.write(str(p2_data)+'\n')
-    f.write(f'- P1 final winning rate: {round(p1_data[-1],2)}%\n')
-    f.write(f'- P2 final winning rate: {round(p2_data[-1],2)}%\n')
+    f.write(f'- P1 final winning rate: {round(p1_data[-1],4)}%\n')
+    f.write(f'- P2 final winning rate: {round(p2_data[-1],4)}%\n')
     f.write(f'- Elapsed Time: {time_elapsd}s\n\n')
 
 ax0 = axes[0, 0]
 ax0.grid(True)
 ax0.plot(iterations, p1_data, 'r', lw=3, label='P1(X) = RANDOM')
 ax0.plot(iterations, p2_data, 'b', lw=3, label='P2(O) = RANDOM')
-ax0.plot(iterations, tie_data, 'g--', lw=2, label='Tie')
+ax0.plot(iterations, tie_data, 'g', lw=2, label='Tie')
 ax0.set_xlabel('TicTacToe Rounds', fontsize=plt_fontsize['x_lbl'])
 ax0.set_ylabel('Cumulative winning rate (%)', fontsize=plt_fontsize['y_lbl'])
 ax0.tick_params(labelsize=plt_fontsize['tick_lbl'])
 ax0.set_ylim(-1, 101)
-title_txt = 'Random(P1, X) vs Random, O)'
+title_txt = 'Random(P1, X) vs Random(P2, O)'
 # title_txt += f'\nP1:{p1_data[-1]}% P2: {p2_data[-1]}% elapsed: {time_elapsd}'
 ax0.set_title(title_txt, fontsize=plt_fontsize['title'])
 ax0.legend(fontsize=plt_fontsize['legend'])
 
+if look_through: time.sleep(3)
+
+
 # 2. Random vs MCTS ===============================================
-
-
 p1_data, p2_data, tie_data = [], [], []
 p1_wins, p2_wins, tie = 0, 0, 0
 iterations = np.arange(rrr, mmm * rrr + 1, rrr)
@@ -225,15 +226,15 @@ print('P1 winning rate: ', p1_data[-1])
 print('P2 winning rate: ', p2_data[-1])
 print()
 
-with open(save_route+'.txt', 'a') as f:
+with open(save_route + '.txt', 'a') as f:
     f.write('CASE Ⅱ. RANDOM VS MCTS\n')
     # f.write('- P1 data:\n')
     # f.write(str(p1_data)+'\n')
     # f.write('- P2 data:\n')
     # f.write(str(p2_data)+'\n')
-    f.write(f'- P1 final winning rate: {round(p1_data[-1],2)}%\n')
-    f.write(f'- P2 final winning rate: {round(p2_data[-1],2)}%\n')
-    f.write(f'- MCTS(P2) Iterations(mean value): {round(float(np.mean(mcts_iterations)),3)}\n')
+    f.write(f'- P1 final winning rate: {round(p1_data[-1],4)}%\n')
+    f.write(f'- P2 final winning rate: {round(p2_data[-1],4)}%\n')
+    f.write(f'- MCTS(P2) Iterations(mean value): {round(float(np.mean(mcts_iterations)),4)}\n')
     f.write(f'- Elapsed Time: {time_elapsd}s\n\n')
 
 ax0 = axes[1, 0]
@@ -259,8 +260,10 @@ else:
     title_txt += '\nCycles limit: ' + str(mcts_criteria[1]) + '(Cycles)'
 ax0.set_title(title_txt, fontsize=plt_fontsize['title'])
 
-# 3. MCTS vs Random ===============================================
+if look_through: time.sleep(3)
 
+
+# 3. MCTS vs Random ===============================================
 p1_data, p2_data, tie_data = [], [], []
 p1_wins, p2_wins, tie = 0, 0, 0
 iterations = np.arange(rrr, mmm * rrr + 1, rrr)
@@ -342,15 +345,15 @@ print('P1 winning rate: ', p1_data[-1])
 print('P2 winning rate: ', p2_data[-1])
 print()
 
-with open(save_route+'.txt', 'a') as f:
+with open(save_route + '.txt', 'a') as f:
     f.write('CASE Ⅲ. MCTS VS Random\n')
     # f.write('- P1 data:\n')
     # f.write(str(p1_data)+'\n')
     # f.write('- P2 data:\n')
     # f.write(str(p2_data)+'\n')
-    f.write(f'- P1 final winning rate: {round(p1_data[-1],2)}%\n')
-    f.write(f'- P2 final winning rate: {round(p2_data[-1],2)}%\n')
-    f.write(f'- MCTS(P2) Iterations(mean value): {round(float(np.mean(mcts_iterations)),3)}\n')
+    f.write(f'- P1 final winning rate: {round(p1_data[-1],4)}%\n')
+    f.write(f'- P2 final winning rate: {round(p2_data[-1],4)}%\n')
+    f.write(f'- MCTS(P2) Iterations(mean value): {round(float(np.mean(mcts_iterations)),4)}\n')
     f.write(f'- Elapsed Time: {time_elapsd}s\n\n')
 
 ax0 = axes[1, 1]
@@ -377,8 +380,10 @@ else:
     title_txt += '\nCycles limit: ' + str(mcts_criteria[1]) + '(Cycles)'
 ax0.set_title(title_txt, fontsize=plt_fontsize['title'])
 
-# 4. MCTS vs MCTS ===============================================
+if look_through: time.sleep(3)
 
+
+# 4. MCTS vs MCTS ===============================================
 p1_data, p2_data, tie_data = [], [], []
 p1_wins, p2_wins, tie = 0, 0, 0
 iterations = np.arange(rrr, mmm * rrr + 1, rrr)
@@ -462,16 +467,17 @@ print('Elapsed Time: ', time_elapsd)
 print('P1 winning rate: ', p1_data[-1])
 print('P2 winning rate: ', p2_data[-1])
 print()
-with open(save_route+'.txt', 'a') as f:
+
+with open(save_route + '.txt', 'a') as f:
     f.write('CASE Ⅳ. MCTS VS MCTS\n')
     # f.write('- P1 data:\n')
     # f.write(str(p1_data)+'\n')
     # f.write('- P2 data:\n')
     # f.write(str(p2_data)+'\n')
-    f.write(f'- P1 final winning rate: {round(p1_data[-1],2)}%\n')
-    f.write(f'- P2 final winning rate: {round(p2_data[-1],2)}%\n')
-    f.write(f'- MCTS(P1) Iterations(mean value): {round(float(np.mean(p1_iterations)),3)}\n')
-    f.write(f'- MCTS(P1) Iterations(mean value): {round(float(np.mean(p2_iterations)),3)}\n')
+    f.write(f'- P1 final winning rate: {round(p1_data[-1],4)}%\n')
+    f.write(f'- P2 final winning rate: {round(p2_data[-1],4)}%\n')
+    f.write(f'- MCTS(P1) Iterations(mean value): {round(float(np.mean(p1_iterations)),4)}\n')
+    f.write(f'- MCTS(P1) Iterations(mean value): {round(float(np.mean(p2_iterations)),4)}\n')
     f.write(f'- Elapsed Time: {time_elapsd}s\n\n')
     f.write(time.ctime())
 
