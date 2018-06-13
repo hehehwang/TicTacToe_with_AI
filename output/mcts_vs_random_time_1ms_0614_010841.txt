@@ -1,0 +1,25 @@
+CASE ¥°. RANDOM VS RANDOM
+- P1 final winning rate: 44.0%
+- P2 final winning rate: 29.0%
+- Elapsed Time: 0.004s
+
+CASE ¥±. RANDOM VS MCTS
+- P1 final winning rate: 10.0%
+- P2 final winning rate: 71.0%
+- MCTS(P2) Iterations(mean value): 73.21
+- Elapsed Time: 0.636s
+
+CASE ¥². MCTS VS Random
+- P1 final winning rate: 87.0%
+- P2 final winning rate: 1.0%
+- MCTS(P2) Iterations(mean value): 51.24
+- Elapsed Time: 0.631s
+
+CASE ¥³. MCTS VS MCTS
+- P1 final winning rate: 52.0%
+- P2 final winning rate: 24.0%
+- MCTS(P1) Iterations(mean value): 61.74
+- MCTS(P1) Iterations(mean value): 48.77
+- Elapsed Time: 1.598s
+
+Thu Jun 14 01:08:45 2018
