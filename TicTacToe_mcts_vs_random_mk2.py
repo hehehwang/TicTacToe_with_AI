@@ -36,7 +36,7 @@ look_through = False
 save_route = f'output/mcts_vs_random_{mcts_criteria[0]}_'
 if mcts_criteria[0] == 'time':
     save_route += f'{mcts_criteria[1]}ms'
-elif mcts_criteria[1] == 'iter':
+elif mcts_criteria[0] == 'iter':
     save_route += f'{mcts_criteria[1]}cycles'
 else:
     raise NotImplementedError
