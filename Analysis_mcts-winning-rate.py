@@ -4,9 +4,9 @@ import matplotlib.pylab as plt
 import numpy as np
 
 from TicTacToe import TTT
-from TicTacToe_mcts import MCTS
-from TicTacToe_minimax import det_next_action_alpha_beta as det_minimax
-from TicTacToe_random import random_action as det_random
+from AI_mcts import MCTS
+from AI_minimax import det_next_action_alpha_beta as det_minimax
+from AI_random import random_action as det_random
 
 
 def auto_random(board):
@@ -23,8 +23,8 @@ def auto_mcts(board, mode, criteria):
     return iii, tmp.mcts_value_only()
 
 
-mmm, rrr = 25, 40  # Match, Round
-mcts_criteria = ['time', 100]  # ['time' or 'iter', millisecond or iteration cycle]
+mmm, rrr = 25, 10  # Match, Round
+mcts_criteria = ['time', 10]  # ['time' or 'iter', millisecond or iteration cycle]
 plt_fontsize = {'title': 'small',
                 'legend': 'xx-small',
                 'x_lbl': 'x-small',
