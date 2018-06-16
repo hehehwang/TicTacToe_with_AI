@@ -20,7 +20,7 @@ def auto_minimax(board):
 def auto_mcts(board, mode, criteria):
     tmp = MCTS(board)
     iii = tmp.mcts(mode=mode, criteria=criteria)
-    return iii, tmp.mcts_value_only()
+    return iii, tmp.result_return()
 
 
 mmm, rrr = 25, 10  # Match, Round

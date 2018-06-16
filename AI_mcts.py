@@ -43,7 +43,7 @@ class Node:
 class MCTS:
     def __init__(self, s):
         self.root = Node(s)
-        self.expansion(self.root)
+        self._expansion(self.root)
 
     def mcts(self, mode='iteration', criteria=10000, new_board=None):
         if new_board is not None:
@@ -66,8 +66,8 @@ class MCTS:
         else:
             raise NotImplementedError
 
-    def mcts_disp(self):
-        # Search best child node of root node and print it
+    def result_view(self):
+        # Search best child node of root node and print all of them
         best_node, best_visits = None, 0
         for n in self.root.child:
             print(n)
@@ -76,8 +76,8 @@ class MCTS:
         print('Best Choice: ', best_node)
         print()
 
-    def mcts_value_only(self):
-        # Search best child node of root node and print it
+    def result_return(self):
+        # Search best child node of root node and return the value
         best_node, best_visits = None, 0
         for n in self.root.child:
             if n.n > best_visits: best_visits, best_node = n.n, n
@@ -85,19 +85,19 @@ class MCTS:
 
     def _mcts_loop(self):
         # One loop of MCTS
-        # MCTS LOOP : selection -> expand -> simulation -> backpropagation
-        node = self.selection(self.root)
-        self.expansion(node)
+        # MCTS LOOP : selection -> expansion -> simulation -> backpropagation
+        node = self._selection(self.root)
+        self._expansion(node)
 
         if node.child:
             selected_node = rndchoice(node.child)
         else:
             selected_node = node
 
-        v = self.simulation(deepcopy(selected_node.state))
-        self.backpropagation(selected_node, v)
+        v = self._simulation(deepcopy(selected_node.state))
+        self._backpropagation(selected_node, v)
 
-    def selection(self, node):
+    def _selection(self, node):
         # Search the best node to simulate by UTC
         if node.child:
             imax, vmax = 0, 0
@@ -107,12 +107,12 @@ class MCTS:
                 if v > vmax:
                     imax, vmax = i, v
             selected = node.child[imax]
-            return self.selection(selected)
+            return self._selection(selected)
         else:
             selected = node
             return selected
 
-    def expansion(self, node):
+    def _expansion(self, node):
         # Append children node when the node is not terminal
         if self.is_terminal(node.state) == 0:
             actions = self.actions_available(node.state)
@@ -120,20 +120,20 @@ class MCTS:
                 state_after_action = self.action_result(node.state, a)
                 node.child.append(Node(state_after_action, node, a))
 
-    def simulation(self, s):
+    def _simulation(self, s):
         # Do random playouts
         if self.is_terminal(s) == 0:
             actions = self.actions_available(s)
             a = rndchoice(actions)
             s = self.action_result(s, a)
-            return self.simulation(s)
+            return self._simulation(s)
         else:
             return self.is_terminal(s)
 
-    def backpropagation(self, node, v):
+    def _backpropagation(self, node, v):
         node.update(v)
         if node.parent:
-            self.backpropagation(node.parent, v)
+            self._backpropagation(node.parent, v)
 
     @staticmethod
     def is_terminal(s):
@@ -192,12 +192,12 @@ if __name__ == '__main__':
         ii = m.mcts(new_board=t.board, mode='time', criteria=2000)
         print('iteration value: ', ii)
         print('elapsed time: ',time.time()-time_start)
-        m.mcts_disp()
+        m.result_view()
 
         time_start = time.time()
         m.mcts(new_board=t.board, mode='iter', criteria=ii)
         print('elapsed time: ',time.time()-time_start)
-        m.mcts_disp()
+        m.result_view()
 
         t.player_input()
         t.checkresult()
