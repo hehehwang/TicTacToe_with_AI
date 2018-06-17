@@ -25,15 +25,15 @@ def auto_mcts(board, mode, criteria):
 def mean(l):
     return sum(l)/len(l)
 
-mmm, rrr = 10, 10  # Match, Round
-mcts_criteria = ['time', 100]  # ['time' or 'iter', millisecond or iteration cycle]
-plt_fontsize = {'title': 'small',
+mmm, rrr = 25, 40  # Match, Round
+mcts_criteria = ['time', 1000]  # ['time' or 'iter', millisecond or iteration cycle]
+plt_fontsize = {'title': 'x-small',
                 'legend': 5,
                 'x_lbl': 'x-small',
                 'y_lbl': 'x-small',
-                'tick_lbl': 'x-small'}
+                'tick_lbl': 'xx-small'}
 fig_dpi = 300  # size of output img
-look_through = False
+look_through = True
 
 save_route = f'output/mcts_vs_random_{mcts_criteria[0]}_'
 if mcts_criteria[0] == 'time':
@@ -108,10 +108,11 @@ ax0.plot(iterations, tie_data, 'g', lw=2, label='Tie')
 ax0.set_xlabel('TicTacToe Rounds', fontsize=plt_fontsize['x_lbl'])
 ax0.set_ylabel('Cumulative winning rate (%)', fontsize=plt_fontsize['y_lbl'])
 ax0.tick_params(labelsize=plt_fontsize['tick_lbl'])
+ax0.set_xlim(rrr, mmm*rrr)
 ax0.set_ylim(-1, 101)
 title_txt = 'Random(P1, X) vs Random(P2, O)'
 # title_txt += f'\nP1:{p1_data[-1]}% P2: {p2_data[-1]}% elapsed: {time_elapsd}'
-ax0.set_title(title_txt, fontsize=plt_fontsize['title'])
+ax0.set_title(title_txt, fontsize=plt_fontsize['title'], weight='bold')
 ax0.legend(fontsize=plt_fontsize['legend'])
 
 if look_through: time.sleep(3)
@@ -192,8 +193,8 @@ ax0.plot(iterations, p1_data, 'r', lw=3, label='P1=RANDOM')
 ax0.plot(iterations, p2_data, 'b', lw=3, label='P2=MCTS')
 ax0.plot(iterations, tie_data, 'g', lw=2, label='Tie')
 ax1.plot(iterations, [i[0] for i in mcts_iter_match], 'c--', lw=2, label='Iterations(mean)')
-# ax1.plot(iterations, [i[1] for i in mcts_iter_match], 'c:', lw=0.5)
-ax1.plot(iterations, [i[2] for i in mcts_iter_match], 'c:', lw=0.5, label='Iterations(min)')
+# ax1.plot(iterations, [i[1] for i in mcts_iter_match], 'c:', lw=0.8)
+ax1.plot(iterations, [i[2] for i in mcts_iter_match], 'c:', lw=0.8, label='Iterations(min)')
 ax1.plot(iterations, [mean([i[0] for i in mcts_iter_match])] * len(iterations), 'c-', lw=1, label='Average Line')
 
 
@@ -210,7 +211,8 @@ ax1.set_ylabel('Iterations', fontsize=plt_fontsize['y_lbl'])
 ax0.tick_params(labelsize=plt_fontsize['tick_lbl'])
 ax1.tick_params(labelsize=plt_fontsize['tick_lbl'])
 
-# set y range
+# set x, y range
+ax0.set_xlim(rrr, mmm*rrr)
 ax0.set_ylim(-1, 101)
 
 # set plot title
@@ -219,7 +221,7 @@ if mcts_criteria[0] == 'time':
     title_txt += '\nTime limit: ' + str(mcts_criteria[1]) + 'ms'
 else:
     title_txt += '\nCycles limit: ' + str(mcts_criteria[1]) + '(Cycles)'
-ax0.set_title(title_txt, fontsize=plt_fontsize['title'])
+ax0.set_title(title_txt, fontsize=plt_fontsize['title'], weight='bold')
 
 if look_through: time.sleep(3)
 
@@ -300,8 +302,8 @@ ax0.plot(iterations, p1_data, 'r', lw=3, label='P1=MCTS')
 ax0.plot(iterations, p2_data, 'b', lw=3, label='P2=RANDOM')
 ax0.plot(iterations, tie_data, 'g', lw=2, label='Tie')
 ax1.plot(iterations, [i[0] for i in mcts_iter_match], 'm--', lw=2, label='Iterations(mean)')
-# ax1.plot(iterations, [i[1] for i in mcts_iter_match], 'c:', lw=0.5)
-ax1.plot(iterations, [i[2] for i in mcts_iter_match], 'm:', lw=0.5, label='Iterations(min)')
+# ax1.plot(iterations, [i[1] for i in mcts_iter_match], 'c:', lw=0.8)
+ax1.plot(iterations, [i[2] for i in mcts_iter_match], 'm:', lw=0.8, label='Iterations(min)')
 ax1.plot(iterations, [mean([i[0] for i in mcts_iter_match])] * len(iterations), 'm-', lw=1, label='Average Line')
 
 # set legends
@@ -317,7 +319,8 @@ ax1.set_ylabel('Iterations', fontsize=plt_fontsize['y_lbl'])
 ax0.tick_params(labelsize=plt_fontsize['tick_lbl'])
 ax1.tick_params(labelsize=plt_fontsize['tick_lbl'])
 
-# set y range
+# set x, y range
+ax0.set_xlim(rrr, mmm*rrr)
 ax0.set_ylim(-1, 101)
 
 # set plot title
@@ -326,7 +329,7 @@ if mcts_criteria[0] == 'time':
     title_txt += '\nTime limit: ' + str(mcts_criteria[1]) + 'ms'
 else:
     title_txt += '\nCycles limit: ' + str(mcts_criteria[1]) + '(Cycles)'
-ax0.set_title(title_txt, fontsize=plt_fontsize['title'])
+ax0.set_title(title_txt, fontsize=plt_fontsize['title'], weight='bold')
 
 if look_through: time.sleep(3)
 
@@ -418,11 +421,11 @@ ax0.plot(iterations, p2_data, 'b', lw=3, label='P2=MCTS')
 ax0.plot(iterations, tie_data, 'g', lw=2, label='Tie')
 
 ax1.plot(iterations, [i[0] for i in p1_iter_match], 'm--', lw=2, label='Iterations(P1)')
-ax1.plot(iterations, [i[2] for i in p1_iter_match], 'm:', lw=0.5)
+ax1.plot(iterations, [i[2] for i in p1_iter_match], 'm:', lw=0.8)
 ax1.plot(iterations, [mean([i[0] for i in p1_iter_match])] * len(iterations), 'm-', lw=1)
 
 ax1.plot(iterations, [i[0] for i in p2_iter_match], 'c--', lw=2, label='Iterations(P2)')
-ax1.plot(iterations, [i[2] for i in p2_iter_match], 'c:', lw=0.5)
+ax1.plot(iterations, [i[2] for i in p2_iter_match], 'c:', lw=0.8)
 ax1.plot(iterations, [mean([i[0] for i in p2_iter_match])] * len(iterations), 'c-', lw=1)
 
 # set legends
@@ -438,7 +441,8 @@ ax1.set_ylabel('Iterations', fontsize=plt_fontsize['y_lbl'])
 ax0.tick_params(labelsize=plt_fontsize['tick_lbl'])
 ax1.tick_params(labelsize=plt_fontsize['tick_lbl'])
 
-# set y range
+# set x, y range
+ax0.set_xlim(rrr, mmm*rrr)
 ax0.set_ylim(-1, 101)
 
 # set plot title
@@ -447,7 +451,7 @@ if mcts_criteria[0] == 'time':
     title_txt += '\n Time limit: ' + str(mcts_criteria[1]) + 'ms'
 else:
     title_txt += '\n Cycles limit: ' + str(mcts_criteria[1]) + '(Cycles)'
-ax0.set_title(title_txt, fontsize=plt_fontsize['title'])
+ax0.set_title(title_txt, fontsize=plt_fontsize['title'], weight='bold')
 
 
 # =================================================
