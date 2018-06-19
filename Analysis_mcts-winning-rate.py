@@ -25,8 +25,8 @@ def auto_mcts(board, mode, criteria):
 def mean(l):
     return sum(l)/len(l)
 
-mmm, rrr = 25, 40  # Match, Round
-mcts_criteria = ['time', 1000]  # ['time' or 'iter', millisecond or iteration cycle]
+mmm, rrr = 20, 10  # Match, Round
+mcts_criteria = ['time', 100]  # ['time' or 'iter', millisecond or iteration cycle]
 plt_fontsize = {'title': 'x-small',
                 'legend': 5,
                 'x_lbl': 'x-small',
@@ -77,7 +77,7 @@ for i in range(mmm):
             t.checkresult()
             t.switch_player()
         r = t.result
-        if look_through: print(f'\n{i}/{mmm}, {j}/{rrr}, {r}\n\n')
+        if look_through: print(f'\n{i+1}/{mmm}, {j+1}/{rrr}, {r}\n\n')
         if r == 1:
             p1_wins += 1
         elif r == 2:
@@ -147,7 +147,7 @@ for i in range(mmm):
             t.switch_player()
         r = t.result
         if look_through:
-            print(f'\n{i}/{mmm}, {j}/{rrr}, {r}\n\n')
+            print(f'\n{i+1}/{mmm}, {j+1}/{rrr}, {r}\n\n')
         if r == 1:
             p1_wins += 1
         elif r == 2:
@@ -256,7 +256,7 @@ for i in range(mmm):
             t.switch_player()
         r = t.result
         if look_through:
-            print(f'\n{i}/{mmm}, {j}/{rrr}, {r}\n\n')
+            print(f'\n{i+1}/{mmm}, {j+1}/{rrr}, {r}\n\n')
         if r == 1:
             p1_wins += 1
         elif r == 2:
@@ -367,7 +367,7 @@ for i in range(mmm):
             t.switch_player()
         r = t.result
         if look_through:
-            print(f'\n{i}/{mmm}, {j}/{rrr}, {r}\n\n')
+            print(f'\n{i+1}/{mmm}, {j+1}/{rrr}, {r}\n\n')
         if r == 1:
             p1_wins += 1
         elif r == 2:

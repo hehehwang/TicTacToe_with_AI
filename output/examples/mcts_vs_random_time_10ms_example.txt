@@ -1,0 +1,34 @@
+=== Settings ===
+- Matchs, Rounds: 25, 40
+- Look Through: True
+- MCTS Setting: time, 10
+
+CASE ¥°. RANDOM VS RANDOM
+- P1 final winning rate: 35.4%
+- P2 final winning rate: 27.8%
+- Elapsed Time: 4.582s
+
+CASE ¥±. RANDOM VS MCTS
+- P1 final winning rate: 4.2%
+- P2 final winning rate: 85.6%
+- MCTS(P2) Iterations(average value): 229.819
+- MCTS(P2) Iterations(min value): 62.431
+- Elapsed Time: 38.961s
+
+CASE ¥². MCTS VS Random
+- P1 final winning rate: 93.0%
+- P2 final winning rate: 0.2%
+- MCTS(P2) Iterations(average value): 177.1703
+- MCTS(P2) Iterations(min value): 53.791
+- Elapsed Time: 39.365s
+
+CASE ¥³. MCTS VS MCTS
+- P1 final winning rate: 36.4%
+- P2 final winning rate: 4.3%
+- MCTS(P1) Iterations(average value): 238.0544
+- MCTS(P1) Iterations(min value): 53.719
+- MCTS(P2) Iterations(average value): 219.2932
+- MCTS(P2) Iterations(min value): 63.538
+- Elapsed Time: 90.806s
+
+Wed Jun 20 01:22:17 2018
