@@ -23,6 +23,7 @@ def auto_mcts(board, mode, criteria):
 
 
 mcts_criteria_0 = ['time', 100]
+fig_dpi = 200
 p1_iter, p2_iter = [], []
 p1_turn, p2_turn = [], []
 turns = 1
@@ -51,7 +52,7 @@ while t.result == 0:
 p1_iter_average = sum(p1_iter) / len(p1_iter)
 p2_iter_average = sum(p2_iter) / len(p2_iter)
 
-fig, axes = plt.subplots(2, 1)
+fig, axes = plt.subplots(2, 1, dpi=fig_dpi)
 
 ax0 = axes[0]
 
@@ -125,4 +126,7 @@ ax0.set_xlabel('Turns')
 ax0.set_ylabel('Time (s)')
 
 plt.tight_layout()
+save_route = f'output/mcts_iter-time_relationship_{mcts_criteria_0[1]}'
+save_route += time.strftime('_%m%d_%H%M%S', time.localtime(time.time()))
+plt.savefig(save_route + '.jpg')
 plt.show()
